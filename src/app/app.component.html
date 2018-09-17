@@ -1,0 +1,158 @@
+<div class="container">
+
+  <!-- HEADER -->
+  <!-- HEADER -->
+  <!-- HEADER -->
+
+  <div class="row">
+    <div class="col-sm-6" *ngIf="activeTodos()">
+      <h3>ACTIVE TODOs <small>[ {{activeTodos().length}} ]</small></h3>
+    </div>
+    <div class="col-sm-6">
+      <a (click)="showCreateTodo()" class="btn btn-success btn-sm pull-right action-new">
+        <i class="fa fa-plus-circle fa-lg"></i>
+        Add New
+      </a>
+    </div>
+  </div>
+
+  <!-- TODO FORM -->
+  <!-- TODO FORM -->
+  <!-- TODO FORM -->
+
+  <form class="form-horizontal" id="todo-edit" *ngIf="todo_edit" #todoForm="ngForm">
+    <hr>
+
+    <input type="hidden" class="form-control" id="todo-id"
+               [(ngModel)]="active_todo.id" name="id">
+
+    <!-- TITLE -->
+    <div class="form-group" >
+      <label for="todo-title" class="col-sm-1 control-label">Title</label>
+      <div class="col-sm-11">
+        <input type="text" class="form-control" id="todo-title" required
+               [(ngModel)]="active_todo.title" name="title" placeholder="Title">
+      </div>
+    </div>
+    
+    <!-- DESCRIPTION -->
+    <div class="form-group">
+      <label for="todo-title" class="col-sm-1 control-label">Description</label>
+      <div class="col-sm-11">
+        <input type="text" class="form-control" id="todo-desc" required 
+               [(ngModel)]="active_todo.description" name="description" placeholder="Description">
+      </div>
+    </div>
+
+    <!-- COLOR -->
+    <div class="form-group">
+      <label for="todo-type" class="col-sm-1 control-label">Color</label>
+      <div class="col-sm-11">
+        <select class="form-control" [(ngModel)]="active_todo.type" name="type">
+          <option value="active" selected="selected">Gray</option>
+          <option value="success">Green</option>
+          <option value="info">Blue</option>
+          <option value="warning">Yellow</option>
+          <option value="danger">Red</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="text-right">
+      <a (click)="cancelTodoEdit()" class="btn btn-default btn-sm">Cancel</a> &nbsp; 
+      <a (click)="saveTodos()" *ngIf="active_todo.id" class="btn btn-success btn-sm">Save TODO</a>
+      <a (click)="saveTodoEdit()"   *ngIf="!active_todo.id" class="btn btn-success btn-sm">Create New TODO</a>
+    </div>
+    <hr>
+  </form>
+
+  <!-- ACTIVE TODO LIST -->
+  <!-- ACTIVE TODO LIST -->
+  <!-- ACTIVE TODO LIST -->
+
+  <div *ngIf="activeTodos() else loading_todos">
+    <!-- NO TODOs YET -->
+    <div *ngIf="!activeTodos().length" class="alert alert-warning" role="alert">
+      <i class="fa fa-exclamation-triangle fa-lg"></i> 
+      No ACTIVE todos, use the 'Add New' button above to create one.
+    </div>
+
+    <!-- SHOW ACTIVE TODOs -->
+    <div *ngIf="todos.length">
+      <table class="table table-hover table-condensed">
+        
+        <tr class="{{todo.type}}" *ngFor="let todo of activeTodos()">
+          <td class="todo-text">
+            <h5>
+              {{todo.title || '&mdash;'}} 
+              <small>{{todo.description || '&mdash;'}}</small>
+            </h5>
+          </td>
+          <td class="text-right todo-actions">
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-default btn-sm" (click)="toggleTodoState(todo.id)">
+                <i class="fa fa-trash fa-lg"></i> Archive</button>
+              <button type="button" class="btn btn-default btn-sm" (click)="showEditTodo(todo.id)">
+                <i class="fa fa-edit fa-lg"></i> Edit</button>
+              <button type="button" class="btn btn-default btn-sm" (click)="completeTodo(todo.id)">
+                <i class="fa fa-check-square fa-lg"></i> Complete</button>
+            </div>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+
+  <!-- COMPLETED TODOS -->
+  <!-- COMPLETED TODOS -->
+  <!-- COMPLETED TODOS -->
+
+  <div *ngIf="completedTodos().length">
+    <h3>COMPLETED TODOs <small *ngIf="completedTodos().length">[ {{completedTodos().length}} ]</small></h3>
+    <div class="panel panel-default" *ngFor="let todo of completedTodos()">
+      <div class="panel-body">
+        <button class="btn btn-sm btn-default pull-right" (click)="toggleTodoState(todo.id)">Archive</button>
+        <h5>
+          [ {{todo.completed_date | date : 'shortDate'}} ] 
+          {{todo.title || '&mdash;'}} 
+          <small>{{todo.description || '&mdash;'}}</small>
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHIVED TODOS -->
+  <!-- ARCHIVED TODOS -->
+  <!-- ARCHIVED TODOS -->
+
+  <div *ngIf="archivedTodos().length && !show_archived">
+    <hr>
+    <button class="btn btn-warning btn-xs" (click)="showArchived()">Show Archived Todos</button>
+    You have {{archivedTodos().length}} archived TODOs.
+  </div>
+
+  <div *ngIf="show_archived">
+    <h3>ARCHIVED TODOs <small *ngIf="archivedTodos().length">[ {{archivedTodos().length}} ]</small></h3>
+    <div class="panel panel-default" *ngFor="let todo of archivedTodos()">
+      <div class="panel-body">
+        <button class="btn btn-sm btn-default pull-right" (click)="toggleTodoState(todo.id)">Unarchive</button>
+        <h5>
+          <span *ngIf="todo.completed_date">[ COMPLETED: {{todo.completed_date | date : 'shortDate'}} ]</span>
+          {{todo.title || '&mdash;'}} 
+          <small>{{todo.description || '&mdash;'}}</small>
+        </h5>
+      </div>
+    </div>  
+  </div>
+  
+</div>
+
+<!-- LOADER SPINNER -->
+<!-- LOADER SPINNER -->
+<!-- LOADER SPINNER -->
+
+<ng-template #loading_todos>
+  <i class="fa fa-spinner fa-pulse"></i> Loading Todos....
+</ng-template>

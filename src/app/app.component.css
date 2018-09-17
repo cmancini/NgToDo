@@ -1,0 +1,45 @@
+h3 {
+  margin-top:0;
+}
+
+.action-new i {
+  color:#555;
+}
+
+.todo-info { 
+  width:40px;
+}
+
+.todo-info i {
+  color:#555;
+}
+
+.todo-actions i {
+  color:#999;
+}
+
+.todo-actions {
+  min-width: 250px;
+}
+
+.todo-text {
+  padding-left: 10px;
+}
+
+.todo-completed {
+  font-weight: bold;
+  color:#900;
+}
+
+.panel .panel-body {
+  padding: 12px;
+}
+
+.panel h5 {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.panel button {
+  margin: 0 0 10px 10px;
+}
